@@ -5,6 +5,7 @@
  */
 package JChat;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -64,6 +65,10 @@ public class AtorChat {
         
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public Component getFrame() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public class SendButtonListener implements ActionListener {
