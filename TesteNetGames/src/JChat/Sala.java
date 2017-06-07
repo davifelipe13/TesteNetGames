@@ -5,22 +5,52 @@
  */
 package JChat;
 
+import java.awt.List;
+import java.util.ArrayList;
+
 /**
  *
  * @author Davi
  */
 public class Sala {
-
-    static String informaUltimaMensagem() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    void criarParticipante(String nome1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    boolean trataMensagem(String mensagem) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private ArrayList<String> mensagens;
+    private Participante participanteCriador;
+    private Participante participanteConvidado;
+    
+    public Sala() {
+        mensagens = new ArrayList<String>();
     }
     
+    public void criarParticipante (String nome) {
+        if (participanteCriador == null) {
+            participanteCriador = new Participante(nome);
+            participanteCriador.tomarVez();
+        } else if (participanteConvidado == null) {
+            participanteConvidado = new Participante(nome);
+            participanteConvidado.passarVez();
+        }
+    }
+    
+    public boolean trataMensagem(String mensagem) {
+        if (participanteCriador.ehVez()) {
+            mensagens.add("[" + participanteCriador.getNome() + "]: " + mensagem + "/n");
+            participanteCriador.passarVez();
+            participanteConvidado.tomarVez();
+            return true;
+        } else if (participanteConvidado.ehVez()) {
+            mensagens.add("[" + participanteConvidado.getNome() + "]: " + mensagem + "\n");
+            participanteConvidado.passarVez();
+            participanteCriador.tomarVez();
+            return true;
+        }
+        return false;
+    }
+    
+    public String informaUltimaMensagem() {
+        return mensagens.get(mensagens.size() -1);
+    }
+
+
+       
 }
