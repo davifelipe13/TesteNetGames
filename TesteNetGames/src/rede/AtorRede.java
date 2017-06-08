@@ -27,10 +27,13 @@ public class AtorRede implements OuvidorProxy {
     private AtorChat atorChat;
     private Proxy proxy;
     
+    private boolean ehMinhaVez = false;
+    
     public AtorRede(AtorChat atorChat) {
         super();
         this.atorChat = atorChat;
         proxy = Proxy.getInstance();
+        proxy.addOuvinte(this);
     }
     
     public void conectar (String nome, String servidor) {
@@ -59,13 +62,20 @@ public class AtorRede implements OuvidorProxy {
     
     @Override
     public void iniciarNovaPartida(Integer posicao) {
-        atorChat.iniciarPartidaRede();
+        if (posicao == 1) {
+            ehMinhaVez = true;
+        } else if (posicao == 2) {
+            ehMinhaVez = false;
+        }
+        
+        atorChat.iniciarPartidaRede(ehMinhaVez);
     }
     
     public void enviarJogada(String mensagem) {
         Mensagem msg = new Mensagem(mensagem);
         try {
             proxy.enviaJogada(msg);
+            ehMinhaVez = false;
         } catch (NaoJogandoException ex) {
             JOptionPane.showMessageDialog(atorChat.getFrame(), ex.getMessage());
             ex.printStackTrace();
@@ -85,6 +95,7 @@ public class AtorRede implements OuvidorProxy {
     @Override
     public void receberJogada(Jogada jogada) {
         Mensagem msg = (Mensagem) jogada;
+        ehMinhaVez = true;
         atorChat.receberMensagemRede(msg.getMensagem());
     }
     
@@ -105,6 +116,20 @@ public class AtorRede implements OuvidorProxy {
     @Override
     public void tratarPartidaNaoIniciada(String message) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String obterNomeAdversario() {
+        String nome = "";
+        if (ehMinhaVez) {
+            nome = proxy.obterNomeAdversario(2);
+        } else {
+            nome = proxy.obterNomeAdversario(1);
+        }
+        return nome;
+    }
+
+    public boolean ehMinhaVez() {
+        return ehMinhaVez;
     }
     
     
