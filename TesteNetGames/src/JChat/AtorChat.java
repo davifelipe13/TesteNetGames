@@ -67,7 +67,15 @@ public class AtorChat {
         frame.setVisible(true);
     }
 
-    public Component getFrame() {
+    public JFrame getFrame() {
+        return this.frame;
+    }
+
+    public void iniciarPartidaRede() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void receberMensagemRede(String mensagem) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

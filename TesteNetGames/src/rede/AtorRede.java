@@ -12,6 +12,7 @@ import br.ufsc.inf.leobr.cliente.Proxy;
 import br.ufsc.inf.leobr.cliente.exception.ArquivoMultiplayerException;
 import br.ufsc.inf.leobr.cliente.exception.JahConectadoException;
 import br.ufsc.inf.leobr.cliente.exception.NaoConectadoException;
+import br.ufsc.inf.leobr.cliente.exception.NaoJogandoException;
 import br.ufsc.inf.leobr.cliente.exception.NaoPossivelConectarException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,20 +48,30 @@ public class AtorRede implements OuvidorProxy {
         }
     }
     
-    public void iniciarPartida() {
+    public void iniciarPartidaRede() {
         try {
             proxy.iniciarPartida(2);
         } catch (NaoConectadoException ex) {
             JOptionPane.showMessageDialog(atorChat.getFrame(), ex.getMessage());
             ex.printStackTrace();
         }
-    }
+    }   
     
     @Override
     public void iniciarNovaPartida(Integer posicao) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        atorChat.iniciarPartidaRede();
     }
-
+    
+    public void enviarJogada(String mensagem) {
+        Mensagem msg = new Mensagem(mensagem);
+        try {
+            proxy.enviaJogada(msg);
+        } catch (NaoJogandoException ex) {
+            JOptionPane.showMessageDialog(atorChat.getFrame(), ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    
     @Override
     public void finalizarPartidaComErro(String message) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -73,9 +84,19 @@ public class AtorRede implements OuvidorProxy {
 
     @Override
     public void receberJogada(Jogada jogada) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Mensagem msg = (Mensagem) jogada;
+        atorChat.receberMensagemRede(msg.getMensagem());
     }
-
+    
+    public void desconectar() {
+        try {
+            proxy.desconectar();
+        } catch (NaoConectadoException ex) {
+            JOptionPane.showMessageDialog(atorChat.getFrame(), ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    
     @Override
     public void tratarConexaoPerdida() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
